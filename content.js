@@ -77,9 +77,14 @@
 
   // Auto-detection: check if we're on a Quizlet set page
   function isQuizletSetPage() {
-    return window.location.href.includes('quizlet.com') && 
-           (window.location.pathname.includes('/set/') || 
-            window.location.pathname.match(/\/\d+\//));
+    try {
+      const url = new URL(window.location.href);
+      const isQuizletDomain = url.hostname === 'quizlet.com' || url.hostname.endsWith('.quizlet.com');
+      const isSetPage = url.pathname.includes('/set/') || url.pathname.match(/\/\d+\//);
+      return isQuizletDomain && isSetPage;
+    } catch (e) {
+      return false;
+    }
   }
 
   // Store the current page type

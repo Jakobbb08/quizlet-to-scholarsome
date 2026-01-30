@@ -23,8 +23,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function checkQuizletPage() {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    if (!tab.url || !tab.url.includes('quizlet.com')) {
+    if (!tab.url) {
       showStatus('Please navigate to a Quizlet study set page.', 'info');
+      importBtn.disabled = true;
+      return false;
+    }
+
+    // Properly validate the URL hostname
+    try {
+      const url = new URL(tab.url);
+      if (url.hostname !== 'quizlet.com' && !url.hostname.endsWith('.quizlet.com')) {
+        showStatus('Please navigate to a Quizlet study set page.', 'info');
+        importBtn.disabled = true;
+        return false;
+      }
+    } catch (e) {
+      showStatus('Invalid URL.', 'error');
       importBtn.disabled = true;
       return false;
     }
