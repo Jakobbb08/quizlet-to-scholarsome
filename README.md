@@ -107,9 +107,15 @@ quizlet-to-scholarsome/
 This extension:
 - Only runs on Quizlet.com pages
 - Only accesses the current page's DOM to extract study set data
-- Stores your API key locally in your browser
+- Stores your API key in browser's sync storage (encrypted by the browser)
 - Only sends data to your configured Scholarsome instance
 - Does not collect or transmit any data to third parties
+
+**Security Note**: The API key is stored in the browser's sync storage. While browsers provide encryption for this storage, you should:
+- Use API keys with limited permissions (only what's needed for importing)
+- Regularly rotate your API keys
+- Never share your extension profile or sync data with untrusted parties
+- Consider using `chrome.storage.local` instead of sync storage if you don't need the settings to sync across devices (this can be changed in the code)
 
 ## License
 

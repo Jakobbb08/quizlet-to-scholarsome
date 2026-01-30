@@ -34,11 +34,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const scholarsome_url = urlInput.value.trim();
+    let scholarsome_url = urlInput.value.trim();
     const scholarsome_api_key = apiKeyInput.value.trim();
 
     if (!scholarsome_url || !scholarsome_api_key) {
       showStatus('Please fill in all fields.', 'error');
+      return;
+    }
+
+    // Validate URL format
+    try {
+      const url = new URL(scholarsome_url);
+      // Ensure HTTPS for security (except localhost for development)
+      if (url.protocol !== 'https:' && url.hostname !== 'localhost' && url.hostname !== '127.0.0.1') {
+        showStatus('Scholarsome URL must use HTTPS for security.', 'error');
+        return;
+      }
+    } catch (error) {
+      console.error('URL validation error:', error);
+      showStatus('Please enter a valid URL (e.g., https://scholarsome.com).', 'error');
       return;
     }
 
@@ -50,6 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       showStatus('Settings saved successfully!', 'success');
     } catch (error) {
+      console.error('Error saving settings:', error);
       showStatus(`Error saving settings: ${error.message}`, 'error');
     }
   });

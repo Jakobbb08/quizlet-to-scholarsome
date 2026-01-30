@@ -11,17 +11,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// Function to import data to Scholarsome
+  // Function to import data to Scholarsome
 async function importToScholarsome(data) {
   // Get Scholarsome API settings from storage
   const settings = await chrome.storage.sync.get(['scholarsome_url', 'scholarsome_api_key']);
   
-  const scholarsome_url = settings.scholarsome_url || 'https://scholarsome.com';
+  let scholarsome_url = settings.scholarsome_url || 'https://scholarsome.com';
   const api_key = settings.scholarsome_api_key;
 
   if (!api_key) {
     throw new Error('Scholarsome API key not configured. Please set it in the extension options.');
   }
+
+  // Validate and ensure HTTPS
+  if (!scholarsome_url.startsWith('https://') && !scholarsome_url.startsWith('http://localhost')) {
+    throw new Error('Scholarsome URL must use HTTPS for security.');
+  }
+
+  // Remove trailing slash if present
+  scholarsome_url = scholarsome_url.replace(/\/$/, '');
 
   // Prepare the data for Scholarsome API
   const payload = {
@@ -45,8 +53,19 @@ async function importToScholarsome(data) {
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Scholarsome API error: ${response.status} - ${errorText}`);
+    let errorMessage = `Scholarsome API error: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      if (errorData.message) {
+        errorMessage = errorData.message;
+      } else if (errorData.error) {
+        errorMessage = errorData.error;
+      }
+    } catch (e) {
+      // If response is not JSON, use status text
+      errorMessage = `API error: ${response.status} ${response.statusText}`;
+    }
+    throw new Error(errorMessage);
   }
 
   const result = await response.json();

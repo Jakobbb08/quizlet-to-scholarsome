@@ -203,7 +203,7 @@ curl -X POST https://scholarsome.com/api/import \
 ```javascript
 const fetch = require('node-fetch');
 
-async function testScholaromeAPI() {
+async function testScholarsomeAPI() {
   const response = await fetch('https://scholarsome.com/api/import', {
     method: 'POST',
     headers: {
@@ -225,7 +225,7 @@ async function testScholaromeAPI() {
   console.log(result);
 }
 
-testScholaromeAPI();
+testScholarsomeAPI();
 ```
 
 ## Mock API for Development

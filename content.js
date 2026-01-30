@@ -24,9 +24,13 @@
 
     // Try to extract terms and definitions
     // Modern Quizlet uses various class names and structures
-    const termCards = document.querySelectorAll('[class*="SetPageTerm"]') ||
-                     document.querySelectorAll('.SetPageTerm-content') ||
-                     document.querySelectorAll('[data-testid="term-card"]');
+    let termCards = document.querySelectorAll('[class*="SetPageTerm"]');
+    if (termCards.length === 0) {
+      termCards = document.querySelectorAll('.SetPageTerm-content');
+    }
+    if (termCards.length === 0) {
+      termCards = document.querySelectorAll('[data-testid="term-card"]');
+    }
 
     if (termCards.length > 0) {
       termCards.forEach(card => {

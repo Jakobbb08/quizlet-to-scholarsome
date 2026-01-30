@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return true;
       }
     } catch (error) {
+      console.error('Error extracting data:', error);
       showStatus('Error extracting data. Please refresh the page and try again.', 'error');
       importBtn.disabled = true;
       return false;
@@ -86,10 +87,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (response.success) {
         showStatus(`Successfully imported ${currentData.terms.length} cards to Scholarsome!`, 'success');
       } else {
+        console.error('Import error:', response.error);
         showStatus(`Error: ${response.error}`, 'error');
         importBtn.disabled = false;
       }
     } catch (error) {
+      console.error('Import exception:', error);
       loader.classList.remove('active');
       showStatus(`Error: ${error.message}`, 'error');
       importBtn.disabled = false;
